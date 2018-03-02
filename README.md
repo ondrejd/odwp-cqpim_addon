@@ -1,6 +1,6 @@
 # Doplňky pro plugin CQPIM
 
-Rozšíření pro [WordPress][1] plugin [ Project Management][2].
+Rozšíření pro [WordPress][1] plugin [CQPIM Project Management][2].
 
 ## Přehled vlastností
 
