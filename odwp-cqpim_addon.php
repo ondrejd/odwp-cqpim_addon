@@ -114,10 +114,10 @@ endif;
 if( !function_exists( 'odwpca_client_sortable_columns' ) ):
     function odwpca_client_sortable_columns( $columns ) {
         $new_columns = array(
-            'odwpca_client_ic' => 'odwpca_ic',
-            'odwpca_client_dic' => 'odwpca_dic',
-            'odwpca_client_fupsc' => 'odwpca_fupsc',
-            'odwpca_client_srv' => 'odwpca_srv',
+            'odwpca_client_ic' => 'odwpca_client_ic',
+            'odwpca_client_dic' => 'odwpca_client_dic',
+            'odwpca_client_fupsc' => 'odwpca_client_fupsc',
+            'odwpca_client_srv' => 'odwpca_client_srv',
         );
         return array_merge( $columns, $new_columns );
     }
@@ -136,14 +136,58 @@ if( !function_exists( 'odwpca_client_sort_columns_orderby' ) ):
             return;
         }
 
-        if( $orderby == 'odwpca_client_fupsc' ) {
-            $query->set( 'meta_key', $orderby );
+        // FIXME This below is not working!
+        /*$query->set( 'meta_key', $orderby );
+        $query->set( 'orderby', 'meta_value' );
+
+        if( $orderby == 'odwpca_client_type' ) {
+            $query->set( 'meta_type', 'NUMERIC' );
         } else {
-            $query->set( 'meta_key', $orderby );
-            $query->set( 'orderby', 'meta_value_num' );
+            $query->set( 'meta_type', 'CHAR' );
+        }*/
+    }
+endif;
+
+
+if( !function_exists( 'odwpca_client_manage_posts' ) ):
+    function odwpca_client_manage_posts( $post_type ) {
+        if( $post_type !== 'cqpim_client' ) {
+            return;
         }
-        
-        return $query;
+
+        $srv = '';
+
+?>
+<select name="contact_odwpca_srv_filter" id="contact_odwpca_srv_filter" value="<?php if( !empty( $srv ) ) { echo $srv; } ?>">
+    <option value="" <?php selected( '', $srv, true )?>><?php _e( 'Všechny typy' )?></option>
+    <option value="mikro" <?php selected( 'mikro', $srv, true )?>><?php _e( 'MIKRO' )?></option>
+    <option value="zaklad" <?php selected( 'zaklad', $srv, true )?>><?php _e( 'ZÁKLAD' )?></option>
+    <option value="standard" <?php selected( 'standard', $srv, true )?>><?php _e( 'STANDARD' )?></option>
+    <option value="vip" <?php selected( 'vip', $srv, true )?>><?php _e( 'VIP' )?></option>
+</select>
+<?php
+    }
+endif;
+
+
+if( !function_exists( 'odwpca_client_prefix_parse_filter' ) ):
+    function odwpca_client_prefix_parse_filter( $query ) {
+        global $pagenow;
+
+        $current_page = isset( $_GET['post_type'] ) ? $_GET['post_type'] : '';
+
+        if(
+            is_admin() &&
+            'cqpim_client' == $current_page &&
+            'edit.php' == $pagenow &&
+            isset( $_GET['contact_odwpca_srv_filter'] ) &&
+            $_GET['contact_odwpca_srv_filter'] != ''
+        ) {
+            $type = $_GET['contact_odwpca_srv_filter'];
+            $query->query_vars['meta_key'] = 'odwpca_client_srv';
+            $query->query_vars['meta_value'] = $type;
+            $query->query_vars['meta_compare'] = '=';
+        }
     }
 endif;
 
@@ -156,9 +200,11 @@ if( !function_exists( 'odwpca_plugins_loaded' ) ):
         // Table
         add_filter( 'manage_cqpim_client_posts_columns', 'odwpca_client_custom_columns', 10, 1 );
         add_action( 'manage_cqpim_client_posts_custom_column', 'odwpca_client_custom_columns_content', 10, 2 );
+        add_filter( 'manage_edit-cqpim_client_sortable_columns', 'odwpca_client_sortable_columns', 10, 1 );
+        add_action( 'pre_get_posts', 'odwpca_client_sort_columns_orderby' );
+        add_action( 'restrict_manage_posts', 'odwpca_client_manage_posts' );
+        add_filter( 'parse_query', 'odwpca_client_prefix_parse_filter' );
     }
 endif;
 
-        add_filter( 'manage_cqpim_client_sortable_columns', 'odwpca_client_sortable_columns' );
-        add_action( 'pre_get_posts', 'odwpca_client_sort_columns_orderby' );
 add_action( 'plugins_loaded', 'odwpca_plugins_loaded' );
