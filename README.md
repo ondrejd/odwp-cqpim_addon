@@ -4,7 +4,7 @@ Rozšíření pro [WordPress][1] plugin [CQPIM Project Management][2].
 
 ## Přehled vlastností
 
-Plugin `odwp-cqpim_addon` přidává do pluginu __CQPIM Project Management__ tyto vlastnosti:
+Plugin `odwp-cqpim_addon` přidává do pluginu __CQPIM__ tyto vlastnosti:
 
 - nové metaboxy pro _CPT_ `cqpim_client`
 - tyto metaboxy jsou promítnuty do admin. tabulky s klienty (včetně řazení a filtrování).
@@ -12,10 +12,16 @@ Plugin `odwp-cqpim_addon` přidává do pluginu __CQPIM Project Management__ tyt
 
 ## TODO
 
-- [ ] dokončit admin. tabulku klienti
-  - [x] řazení u nových sloupců
-  - [x] filtrování dle typu služby
+- [x] ~~dokončit admin. tabulku klienti~~
+  - [x] ~~řazení u nových sloupců~~
+  - [x] ~~filtrování dle typu služby~~
+    - [x] ~~po nastavení filtru a obnovení stránky není selectbox správně nastaven~~
+  - [x] ~~filtrování dle PSČ finančního úřadu~~
 - [ ] dokončit úpravy pro admin. tabulku faktury
+  - [x] ~~přidat filtr dle stavu (jen zaplaceno, nezaplaceno)~~
+  - [ ] přidat filtr dle variabilního symbolu faktury
+- [x] ~~přidat po aktivaci pluginu test na to, že je nainstalován __CQPIM__~~
+- [ ] upravit vstupní formulář (_front-end_)
 
 [1]: https://www.wordpress.org/
 [2]: http://www.cqpim.uk/
