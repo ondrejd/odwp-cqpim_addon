@@ -262,6 +262,7 @@ if( !function_exists( 'odwpca_invoice_manage_posts' ) ):
     <option value="" <?php selected( '', $state, true )?>><?php _e( 'Všechny stavy' )?></option>
     <option value="zaplacene" <?php selected( 'zaplacene', $state, true )?>><?php _e( 'Zaplacené' )?></option>
     <option value="nezaplacene" <?php selected( 'nezaplacene', $state, true )?>><?php _e( 'Nezaplacené' )?></option>
+    <option value="posplatnosti" <?php selected( 'posplatnosti', $state, true )?>><?php _e( 'Po splatnosti' )?></option>
 </select>
 <?php
     }
@@ -287,13 +288,15 @@ if( !function_exists( 'odwpca_invoice_prefix_parse_filter' ) ):
             $_GET['odwpca_invoice_state_filter'] != ''
         ) {
             $state = $_GET['odwpca_invoice_state_filter'];
-            $query->query_vars['meta_key'] = 'odwpca_invoice_paid';
-            $query->query_vars['meta_value'] = 'y';
 
-            if( 'zaplacene' === $state ) {
+            if( 'posplatnosti' === $state ) {
+                $query->query_vars['meta_key'] = 'odwpca_invoice_afterpayterm';
+                $query->query_vars['meta_value'] = 'y';
                 $query->query_vars['meta_compare'] = '=';
             } else {
-                $query->query_vars['meta_compare'] = '!=';
+                $query->query_vars['meta_key'] = 'odwpca_invoice_paid';
+                $query->query_vars['meta_value'] = 'y';
+                $query->query_vars['meta_compare'] = ( 'zaplacene' === $state ) ? '=' : '!=';
             }
         }
     }
@@ -322,10 +325,22 @@ if( !function_exists( 'odwpca_cqpim_invoice_save' ) ):
         }
 
         $inv_details = get_post_meta( $post_id, 'invoice_details', true );
-        $inv_paid = isset($inv_details['paid']) ? $inv_details['paid'] : '';
+        $inv_paid = isset( $inv_details['paid'] ) ? $inv_details['paid'] : '';
         $paid = ( bool ) $inv_paid === true ? 'y' : 'n';
-
         update_post_meta( $post_id, 'odwpca_invoice_paid', $paid );
+
+        if( $paid != 'y' ) {
+            $due = isset( $inv_details['terms_over'] ) ? $inv_details['terms_over'] : '';
+
+            if( $due ) {
+                $now = time();
+                update_post_meta( $post_id, 'odwpca_invoice_afterpayterm', ( $now > $due ) ? 'y' : 'n' );
+            } else {
+                update_post_meta( $post_id, 'odwpca_invoice_afterpayterm', 'n' );
+            }
+        } else {
+            update_post_meta( $post_id, 'odwpca_invoice_afterpayterm', 'n' );
+        }
 
         return $post_id;
     }

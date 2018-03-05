@@ -8,7 +8,8 @@ Plugin `odwp-cqpim_addon` přidává do pluginu __CQPIM__ tyto vlastnosti:
 
 - nové metaboxy pro _CPT_ `cqpim_client`
 - tyto metaboxy jsou promítnuty do admin. tabulky s klienty (včetně řazení a filtrování).
-- nové sloupečky (včetně řazení) a filtrování pro admin. tabulku s fakturami
+- nový filtr dle stavu zaplacení pro admin. tabulku s fakturami
+- speciální formulář pro žádosti o předběžné objednávky nových klientů
 
 ## TODO
 
@@ -19,7 +20,7 @@ Plugin `odwp-cqpim_addon` přidává do pluginu __CQPIM__ tyto vlastnosti:
   - [x] filtrování dle PSČ finančního úřadu
 - [ ] dokončit úpravy pro admin. tabulku faktury
   - [x] přidat filtr dle stavu (jen zaplaceno, nezaplaceno)
-    - [ ] __FIXME__ - na ostrém serveru to nefunguje!
+    - [x] __FIXME__ - na ostrém serveru to nefunguje!
   - [ ] ~~přidat filtr dle variabilního symbolu faktury~~ (__zrušeno__)
 - [x] přidat po aktivaci pluginu test na to, že je nainstalován __CQPIM__
 - [x] upravit vstupní formulář (_front-end_) - vytvořeno jako *shortcode* `[odwpca_frontend_form]`
